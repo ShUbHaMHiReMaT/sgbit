@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGBIT Library Management System</title>
+    <style>
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #f50057;
+            --light-color: #f5f5f5;
+            --dark-color: #333;
+            --success-color: #4caf50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+        }
+
+        .user-info {
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .user-role {
+            background-color: var(--secondary-color);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .login-section {
+            height: calc(100vh - 76px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(63, 81, 181, 0.8), rgba(245, 0, 87, 0.8));
+        }
+
+        .login-form {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            max-width: 90%;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #303f9f;
+        }
+
+        .library-section {
+            display: none;
+            padding: 2rem 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-message {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .note-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .note-header {
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .note-body {
+            padding: 1rem;
+        }
+
+        .note-info {
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-label {
+            font-weight: bold;
+            min-width: 100px;
+        }
+
+        .download-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .upload-section {
+            display: none;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-title {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .upload-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .upload-btn-container {
+            grid-column: 1 / -1;
+            margin-top: 1rem;
+        }
+
+        .file-input-container {
+            grid-column: 1 / -1;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transform: translateX(200%);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .upload-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/api/placeholder/50/50" alt="SGBIT Logo">
+                <h1>SGBIT Library</h1>
+            </div>
+            <div class="user-info">
+                <span class="user-name" id="display-name">Student Name</span>
+                <span class="user-role" id="display-role">Student</span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="login-section" id="login-section">
+            <div class="login-form">
+                <h2 class="form-title">Login to SGBIT Library</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="usn">USN</label>
+                        <input type="text" id="usn" name="usn" placeholder="Enter your USN" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="branch">Branch</label>
+                        <select id="branch" name="branch" required>
+                            <option value="">Select Branch</option>
+                            <option value="cse">Computer Science Engineering</option>
+                            <option value="csbs">CS & Business Systems</option>
+                            <option value="ee">Electrical Engineering</option>
+                            <option value="ec">Electronics & Communication</option>
+                            <option value="mech">Mechanical Engineering</option>
+                            <option value="civil">Civil Engineering</option>
+                            <option value="aids">AI & Data Science</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <select id="year" name="year" required>
+                            <option value="">Select Year</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="semester">Semester</label>
+                        <select id="semester" name="semester" required>
+                            <option value="">Select Semester</option>
+                            <option value="1">1st Semester</option>
+                            <option value="2">2nd Semester</option>
+                            <option value="3">3rd Semester</option>
+                            <option value="4">4th Semester</option>
+                            <option value="5">5th Semester</option>
+                            <option value="6">6th Semester</option>
+                            <option value="7">7th Semester</option>
+                            <option value="8">8th Semester</option>
+                        </select>
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+        </section>
+
+        <section class="library-section container" id="library-section">
+            <div class="section-header">
+                <h2 class="welcome-message" id="welcome-message">Welcome to SGBIT Library</h2>
+                <button class="logout-btn" id="logout-btn">Logout</button>
+            </div>
+
+            <div class="upload-section" id="upload-section">
+                <h3 class="upload-title">Upload New Notes</h3>
+                <form id="upload-form" class="upload-form">
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Select Subject</option>
+                            <option value="mathematics">Mathematics</option>
+                            <option value="programming">Programming</option>
+                            <option value="data_structures">Data Structures</option>
+                            <option value="algorithms">Algorithms</option>
+                            <option value="database">Database Systems</option>
+                            <option value="networks">Computer Networks</option>
+                            <option value="os">Operating Systems</option>
+                            <option value="ai">Artificial Intelligence</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="upload-branch">Branch</label>
+                        <select id="upload-branch" name="upload-branch" required>
+                            <option value="">Select Branch</option>
+                            <option value="cse">Computer Science Engineering</option>
+                            <option value="csbs">CS & Business Systems</option>
+                            <option value="ee">Electrical Engineering</option>
+                            <option value="ec">Electronics & Communication</option>
+                            <option value="mech">Mechanical Engineering</option>
+                            <option value="civil">Civil Engineering</option>
+                            <option value="aids">AI & Data Science</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="upload-year">Year</label>
+                        <select id="upload-year" name="upload-year" required>
+                            <option value="">Select Year</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="upload-semester">Semester</label>
+                        <select id="upload-semester" name="upload-semester" required>
+                            <option value="">Select Semester</option>
+                            <option value="1">1st Semester</option>
+                            <option value="2">2nd Semester</option>
+                            <option value="3">3rd Semester</option>
+                            <option value="4">4th Semester</option>
+                            <option value="5">5th Semester</option>
+                            <option value="6">6th Semester</option>
+                            <option value="7">7th Semester</option>
+                            <option value="8">8th Semester</option>
+                        </select>
+                    </div>
+                    <div class="form-group file-input-container">
+                        <label for="notes-file">Upload PDF File</label>
+                        <input type="file" id="notes-file" name="notes-file" accept=".pdf" required>
+                    </div>
+                    <div class="upload-btn-container">
+                        <button type="submit" id="upload-btn">Upload Notes</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="filter-container">
+                <h3>Filter Notes</h3>
+                <div class="filter-options">
+                    <div class="filter-group">
+                        <label for="filter-subject">Subject</label>
+                        <select id="filter-subject">
+                            <option value="">All Subjects</option>
+                            <option value="mathematics">Mathematics</option>
+                            <option value="programming">Programming</option>
+                            <option value="data_structures">Data Structures</option>
+                            <option value="algorithms">Algorithms</option>
+                            <option value="database">Database Systems</option>
+                            <option value="networks">Computer Networks</option>
+                            <option value="os">Operating Systems</option>
+                            <option value="ai">Artificial Intelligence</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notes-grid" id="notes-grid">
+            </div>
+        </section>
+    </main>
+
+    <div class="notification" id="notification">
+        Operation completed successfully!
+    </div>
+
+    <script>
+        const dummyUsers = [
+            { usn: "2BU23CS140", name: "SHUBHAM HIREMATH", role: "staff", branch: "cse"},
+            { usn: "2BU23CS134", name: "SHLOKA M", role: "staff", branch: "cse"},
+            { usn: "2BU23CS146", name: "SOUMYA", role: "staff", branch: "cse"},
+            { usn: "2BU23CS145", name: "SOUBIYA", role: "staff", branch: "cse"},
+        ];
+
+        let notesData = [
+            { id: 1, title: "Data Structures Notes", subject: "data_structures", branch: "cse", year: "2", semester: "3", uploadedBy: "Dr. Sanjay Patel", uploadDate: "2024-01-15" },
+            { id: 2, title: "Advanced Algorithms", subject: "algorithms", branch: "cse", year: "3", semester: "5", uploadedBy: "Dr. Sanjay Patel", uploadDate: "2024-01-18" },
+            { id: 3, title: "Database Management Systems", subject: "database", branch: "cse", year: "2", semester: "4", uploadedBy: "Prof. Meera Desai", uploadDate: "2024-01-20" },
+            { id: 4, title: "Digital Electronics Fundamentals", subject: "networks", branch: "ec", year: "2", semester: "3", uploadedBy: "Prof. Meera Desai", uploadDate: "2024-01-25" },
+            { id: 5, title: "Mechanics Basics", subject: "programming", branch: "mech", year: "1", semester: "2", uploadedBy: "Dr. Rajesh Gupta", uploadDate: "2024-02-01" },
+            { id: 6, title: "Introduction to AI", subject: "ai", branch: "aids", year: "2", semester: "3", uploadedBy: "Dr. Rajesh Gupta", uploadDate: "2024-02-05" },
+            { id: 7, title: "Web Programming", subject: "programming", branch: "cse", year: "3", semester: "5", uploadedBy: "Dr. Sanjay Patel", uploadDate: "2024-02-10" },
+            { id: 8, title: "Calculus for Engineers", subject: "mathematics", branch: "cse", year: "1", semester: "1", uploadedBy: "Prof. Meera Desai", uploadDate: "2024-02-15" }
+        ];
+
+        const loginSection = document.getElementById('login-section');
+        const librarySection = document.getElementById('library-section');
+        const uploadSection = document.getElementById('upload-section');
+        const loginForm = document.getElementById('login-form');
+        const uploadForm = document.getElementById('upload-form');
+        const logoutBtn = document.getElementById('logout-btn');
+        const notesGrid = document.getElementById('notes-grid');
+        const filterSubject = document.getElementById('filter-subject');
+        const userInfo = document.querySelector('.user-info');
+        const displayName = document.getElementById('display-name');
+        const displayRole = document.getElementById('display-role');
+        const notification = document.getElementById('notification');
+        const welcomeMessage = document.getElementById('welcome-message');
+
+        let currentUser = null;
+        let currentBranch = "";
+        let currentYear = "";
+        let currentSemester = "";
+
+        loginForm.addEventListener('submit', handleLogin);
+        uploadForm.addEventListener('submit', handleUpload);
+        logoutBtn.addEventListener('click', handleLogout);
+        filterSubject.addEventListener('change', filterNotes);
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const usn = document.getElementById('usn').value;
+            const branch = document.getElementById('branch').value;
+            const year = document.getElementById('year').value;
+            const semester = document.getElementById('semester').value;
+
+            const user = dummyUsers.find(u => u.usn.toLowerCase() === usn.toLowerCase());
+
+            if (user) {
+                currentUser = user;
+                currentBranch = branch;
+                currentYear = year;
+                currentSemester = semester;
+
+                displayName.textContent = user.name;
+                displayRole.textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+                userInfo.style.display = 'flex';
+                welcomeMessage.textContent = `Welcome, ${user.name}!`;
+                if (user.role === 'staff') {
+                    uploadSection.style.display = 'block';
+                } else {
+                    uploadSection.style.display = 'none';
+                }
+
+                loginSection.style.display = 'none';
+                librarySection.style.display = 'block';
+
+                loadNotes();
+                
+                showNotification('Login successful!');
+            } else {
+                showNotification('Invalid USN. Please try again.', 'error');
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            currentBranch = "";
+            currentYear = "";
+            currentSemester = "";
+            loginSection.style.display = 'flex';
+            librarySection.style.display = 'none';
+            userInfo.style.display = 'none';
+            loginForm.reset();
+            welcomeMessage.textContent = 'Welcome to SGBIT Library';
+        }
+
+        function handleUpload(e) {
+            e.preventDefault();
+            if (currentUser && currentUser.role === 'staff') {
+                const subject = document.getElementById('subject').value;
+                const branch = document.getElementById('upload-branch').value;
+                const year = document.getElementById('upload-year').value;
+                const semester = document.getElementById('upload-semester').value;
+                const file = document.getElementById('notes-file').files[0];
+
+                if (file) {
+                    const newNote = {
+                        id: notesData.length + 1,
+                        title: file.name.replace('.pdf', ''),
+                        subject: subject,
+                        branch: branch,
+                        year: year,
+                        semester: semester,
+                        uploadedBy: currentUser.name,
+                        uploadDate: new Date().toISOString().split('T')[0]
+                    };
+
+                    notesData.push(newNote);
+                    showNotification('Notes uploaded successfully!');
+                    uploadForm.reset();
+
+                    loadNotes();
+                } else {
+                    showNotification('Please select a PDF file to upload.', 'error');
+                }
+            } else {
+                showNotification('You do not have permission to upload files.', 'error');
+            }
+        }
+
+        function loadNotes() {
+            let filteredNotes = [...notesData];
+            
+            if (currentUser.role === 'student') {
+                filteredNotes = filteredNotes.filter(note => {
+                    const branchMatch = note.branch === currentBranch;
+                    
+                    const yearMatch = note.year === currentYear || note.year === "";
+                    const semesterMatch = note.semester === currentSemester || note.semester === "";
+                    
+                    return branchMatch && (yearMatch || semesterMatch);
+                });
+            }
+            
+            const subjectFilter = filterSubject.value;
+            if (subjectFilter) {
+                filteredNotes = filteredNotes.filter(note => note.subject === subjectFilter);
+            }
+
+            displayNotes(filteredNotes);
+        }
+
+        function filterNotes() {
+            loadNotes();
+        }
+
+        function displayNotes(notes) {
+            notesGrid.innerHTML = '';
+            
+            if (notes.length === 0) {
+                notesGrid.innerHTML = '<p>No notes found matching your criteria.</p>';
+                return;
+            }
+
+            notes.forEach(note => {
+                const card = document.createElement('div');
+                card.className = 'note-card';
+                
+                card.innerHTML = `
+                    <div class="note-header">
+                        <h3>${note.title}</h3>
+                    </div>
+                    <div class="note-body">
+                        <div class="note-info">
+                            <div class="info-item">
+                                <span class="info-label">Subject:</span>
+                                <span>${formatSubject(note.subject)}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Branch:</span>
+                                <span>${formatBranch(note.branch)}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Year:</span>
+                                <span>${note.year ? note.year + ' Year' : 'All Years'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Semester:</span>
+                                <span>${note.semester ? note.semester + ' Semester' : 'All Semesters'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Uploaded By:</span>
+                                <span>${note.uploadedBy}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Date:</span>
+                                <span>${formatDate(note.uploadDate)}</span>
+                            </div>
+                        </div>
+                        <button class="download-btn" onclick="downloadNote(${note.id})">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Download PDF
+                        </button>
+                    </div>
+                `;
+                
+                notesGrid.appendChild(card);
+            });
+        }
+
+        function downloadNote(noteId) {
+            const note = notesData.find(n => n.id === noteId);
+            if (note) {
+                showNotification(`Downloading: ${note.title}.pdf`);
+                setTimeout(() => {
+                    showNotification('Download complete!');
+                }, 1500);
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.className = type === 'success' ? 'notification show' : 'notification show error';
+            notification.style.backgroundColor = type === 'success' ? 'var(--success-color)' : 'var(--secondary-color)';
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function formatSubject(subject) {
+            const subjectMap = {
+                'mathematics': 'Mathematics',
+                'programming': 'Programming',
+                'data_structures': 'Data Structures',
+                'algorithms': 'Algorithms',
+                'database': 'Database Systems',
+                'networks': 'Computer Networks',
+                'os': 'Operating Systems',
+                'ai': 'Artificial Intelligence'
+            };
+            return subjectMap[subject] || subject;
+        }
+
+        function formatBranch(branch) {
+            const branchMap = {
+                'cse': 'Computer Science',
+                'csbs': 'CS & Business Systems',
+                'ee': 'Electrical Engineering',
+                'ec': 'Electronics & Communication',
+                'mech': 'Mechanical Engineering',
+                'civil': 'Civil Engineering',
+                'aids': 'AI & Data Science'
+            };
+            return branchMap[branch] || branch;
+        }
+
+        window.downloadNote = downloadNote;
+    </script>
+</body>
+</html>
